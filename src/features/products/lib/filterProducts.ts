@@ -3,6 +3,7 @@ import type { Product } from '../model/types';
 export interface FilterOptions {
   minPrice: string;
   maxPrice: string;
+  searchTerm: string;
   selectedBrands: string[];
 }
 
@@ -22,14 +23,21 @@ const parsePositiveNumber = (value: string): number | null => {
 export const filterProducts = (products: Product[], options: FilterOptions): Product[] => {
   const minPrice = parsePositiveNumber(options.minPrice);
   const maxPrice = parsePositiveNumber(options.maxPrice);
+  const searchTerm = options.searchTerm.trim().toLowerCase();
 
   return products.filter((product) => {
     const meetsMinPrice = minPrice === null ? true : product.price >= minPrice;
     const meetsMaxPrice = maxPrice === null ? true : product.price <= maxPrice;
     const meetsBrand =
       options.selectedBrands.length === 0 ? true : options.selectedBrands.includes(product.brand);
+    const meetsSearch =
+      searchTerm.length === 0
+        ? true
+        : [product.title, product.description, product.brand, product.category]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(searchTerm));
 
-    return meetsMinPrice && meetsMaxPrice && meetsBrand;
+    return meetsMinPrice && meetsMaxPrice && meetsBrand && meetsSearch;
   });
 };
 

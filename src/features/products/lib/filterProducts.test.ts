@@ -43,6 +43,7 @@ describe('filterProducts', () => {
     const result = filterProducts(products, {
       minPrice: '200',
       maxPrice: '700',
+      searchTerm: '',
       selectedBrands: ['Acme'],
     });
 
@@ -54,10 +55,23 @@ describe('filterProducts', () => {
     const result = filterProducts(products, {
       minPrice: '-1',
       maxPrice: 'abc',
+      searchTerm: '',
       selectedBrands: [],
     });
 
     expect(result).toHaveLength(3);
+  });
+
+  it('filters by search term across title, description, brand, and category', () => {
+    const result = filterProducts(products, {
+      minPrice: '',
+      maxPrice: '',
+      searchTerm: 'work',
+      selectedBrands: [],
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(3);
   });
 });
 

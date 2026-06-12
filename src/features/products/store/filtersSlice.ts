@@ -4,6 +4,7 @@ export interface ProductFiltersState {
   category: string | null;
   minPrice: string;
   maxPrice: string;
+  searchTerm: string;
   selectedBrands: string[];
   page: number;
   pageSize: number;
@@ -13,6 +14,7 @@ const initialState: ProductFiltersState = {
   category: null,
   minPrice: '',
   maxPrice: '',
+  searchTerm: '',
   selectedBrands: [],
   page: 1,
   pageSize: 12,
@@ -34,6 +36,10 @@ const filtersSlice = createSlice({
       state.maxPrice = action.payload;
       state.page = 1;
     },
+    setSearchTerm(state, action: PayloadAction<string>) {
+      state.searchTerm = action.payload;
+      state.page = 1;
+    },
     toggleBrand(state, action: PayloadAction<string>) {
       const brand = action.payload;
       const exists = state.selectedBrands.includes(brand);
@@ -47,6 +53,7 @@ const filtersSlice = createSlice({
       state.category = null;
       state.minPrice = '';
       state.maxPrice = '';
+      state.searchTerm = '';
       state.selectedBrands = [];
       state.page = 1;
     },
@@ -60,6 +67,7 @@ export const {
   setCategory,
   setMinPrice,
   setMaxPrice,
+  setSearchTerm,
   toggleBrand,
   clearFilters,
   setPage,

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../app/hooks';
-import { clearFilters } from '../../features/products/store/filtersSlice';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { clearFilters, setSearchTerm } from '../../features/products/store/filtersSlice';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -9,14 +9,34 @@ interface HeaderProps {
 }
 
 export const Header = ({ onMenuClick, isSidebarOpen = false }: HeaderProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const storedSearchTerm = useAppSelector((state) => state.productFilters.searchTerm);
+  const [searchQuery, setSearchQuery] = useState(storedSearchTerm);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setSearchQuery(storedSearchTerm);
+  }, [storedSearchTerm]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const normalizedValue = searchQuery.trim();
+      dispatch(setSearchTerm(normalizedValue));
+      if (location.pathname !== '/') {
+        navigate('/');
+      }
+    }, 350);
+
+    return () => window.clearTimeout(timer);
+  }, [dispatch, location.pathname, navigate, searchQuery]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      console.log('Search for:', searchQuery);
+    const normalizedValue = searchQuery.trim();
+    dispatch(setSearchTerm(normalizedValue));
+    if (location.pathname !== '/') {
+      navigate('/');
     }
   };
 

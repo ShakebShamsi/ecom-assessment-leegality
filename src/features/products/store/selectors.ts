@@ -19,6 +19,7 @@ export const selectFilteredProducts = createSelector(
     filterProducts(products, {
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
+      searchTerm: filters.searchTerm,
       selectedBrands: filters.selectedBrands,
     }),
 );

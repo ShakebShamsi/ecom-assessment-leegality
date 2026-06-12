@@ -6,6 +6,7 @@ import {
   setMaxPrice,
   setMinPrice,
   setPage,
+  setSearchTerm,
   toggleBrand,
 } from './filtersSlice';
 
@@ -16,6 +17,7 @@ describe('filtersSlice', () => {
         category: null,
         minPrice: '',
         maxPrice: '',
+        searchTerm: '',
         selectedBrands: [],
         page: 3,
         pageSize: 12,
@@ -36,12 +38,32 @@ describe('filtersSlice', () => {
 
     state = productFiltersReducer(state, setMinPrice('10'));
     state = productFiltersReducer(state, setMaxPrice('500'));
+    state = productFiltersReducer(state, setSearchTerm('phone'));
     state = productFiltersReducer(state, setPage(2));
     state = productFiltersReducer(state, clearFilters());
 
     expect(state.page).toBe(1);
     expect(state.minPrice).toBe('');
     expect(state.maxPrice).toBe('');
+    expect(state.searchTerm).toBe('');
     expect(state.selectedBrands).toEqual([]);
+  });
+
+  it('sets search term and resets page', () => {
+    const nextState = productFiltersReducer(
+      {
+        category: null,
+        minPrice: '',
+        maxPrice: '',
+        searchTerm: '',
+        selectedBrands: [],
+        page: 4,
+        pageSize: 12,
+      },
+      setSearchTerm('coffee'),
+    );
+
+    expect(nextState.searchTerm).toBe('coffee');
+    expect(nextState.page).toBe(1);
   });
 });
