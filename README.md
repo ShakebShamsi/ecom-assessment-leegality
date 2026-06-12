@@ -8,8 +8,6 @@ A React + TypeScript e-commerce frontend that displays products from DummyJSON, 
 
 ## Product Listing Screenshot (With Sidebar)
 
-![Product Listing With Sidebar](./public/product-listing-with-sidebar.png)
-
 ![Product Listing Page With Sidebar](./public/product-listing-page-with-sidebar.png)
 
 ## Product Details Page Screenshot
