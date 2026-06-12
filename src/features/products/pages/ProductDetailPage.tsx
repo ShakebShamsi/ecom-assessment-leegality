@@ -66,7 +66,9 @@ export const ProductDetailPage = () => {
         ← Back
       </button>
       <section className="detail-card">
-        <img src={product.thumbnail} alt={product.title} className="detail-image" />
+        <div className="detail-media">
+          <img src={product.thumbnail} alt={product.title} className="detail-image" />
+        </div>
         <div className="detail-content">
           <h1>{product.title}</h1>
           <div className="detail-price-rating">
@@ -87,58 +89,58 @@ export const ProductDetailPage = () => {
             <h2>Description</h2>
             <p className="detail-description">{product.description}</p>
           </div>
+
+          {reviews.length > 0 && (
+            <section className="reviews-section">
+              <h2>Reviews</h2>
+              <div className="reviews-list">
+                {displayedReviews.map((review, index) => (
+                  <div key={`${review.reviewerEmail}-${index}`} className="review-item">
+                    <div className="review-header">
+                      <h3 className="reviewer-name">{review.reviewerName}</h3>
+                      <StarRating rating={review.rating} size="small" />
+                    </div>
+                    <p className="review-comment">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+
+              {totalReviewPages > 1 && (
+                <div className="pagination">
+                  <button
+                    className="pagination-btn"
+                    onClick={() => setCurrentReviewPage(Math.max(1, currentReviewPage - 1))}
+                    disabled={currentReviewPage === 1}
+                    type="button"
+                  >
+                    ← Previous
+                  </button>
+
+                  {generatePageNumbers().map((page) => (
+                    <button
+                      key={page}
+                      className={`pagination-btn ${currentReviewPage === page ? 'active' : ''}`}
+                      onClick={() => setCurrentReviewPage(page)}
+                      type="button"
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    className="pagination-btn"
+                    onClick={() => setCurrentReviewPage(Math.min(totalReviewPages, currentReviewPage + 1))}
+                    disabled={currentReviewPage === totalReviewPages}
+                    type="button"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </section>
-
-      {reviews.length > 0 && (
-        <section className="reviews-section">
-          <h2>Reviews</h2>
-          <div className="reviews-list">
-            {displayedReviews.map((review, index) => (
-              <div key={`${review.reviewerEmail}-${index}`} className="review-item">
-                <div className="review-header">
-                  <h3 className="reviewer-name">{review.reviewerName}</h3>
-                  <StarRating rating={review.rating} size="small" />
-                </div>
-                <p className="review-comment">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-
-          {totalReviewPages > 1 && (
-            <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentReviewPage(Math.max(1, currentReviewPage - 1))}
-                disabled={currentReviewPage === 1}
-                type="button"
-              >
-                ← Previous
-              </button>
-
-              {generatePageNumbers().map((page) => (
-                <button
-                  key={page}
-                  className={`pagination-btn ${currentReviewPage === page ? 'active' : ''}`}
-                  onClick={() => setCurrentReviewPage(page)}
-                  type="button"
-                >
-                  {page}
-                </button>
-              ))}
-
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentReviewPage(Math.min(totalReviewPages, currentReviewPage + 1))}
-                disabled={currentReviewPage === totalReviewPages}
-                type="button"
-              >
-                Next →
-              </button>
-            </div>
-          )}
-        </section>
-      )}
     </main>
   );
 };
