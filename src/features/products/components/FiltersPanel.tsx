@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useGetCategoriesQuery } from '../api/productsApi';
 import {
@@ -18,16 +18,10 @@ export const FiltersPanel = ({ brands }: FiltersPanelProps) => {
   const { category, maxPrice, minPrice, selectedBrands } = useAppSelector((state) => state.productFilters);
   const { data: categories = [] } = useGetCategoriesQuery();
   const [searchText, setSearchText] = useState('');
-  const [minDraft, setMinDraft] = useState(minPrice);
-  const [maxDraft, setMaxDraft] = useState(maxPrice);
+  const [priceDraft, setPriceDraft] = useState<{ min: string; max: string } | null>(null);
 
-  useEffect(() => {
-    setMinDraft(minPrice);
-  }, [minPrice]);
-
-  useEffect(() => {
-    setMaxDraft(maxPrice);
-  }, [maxPrice]);
+  const minDraft = priceDraft?.min ?? minPrice;
+  const maxDraft = priceDraft?.max ?? maxPrice;
 
   const toLabel = (value: string) =>
     value
@@ -56,6 +50,7 @@ export const FiltersPanel = ({ brands }: FiltersPanelProps) => {
   const handleApplyPrice = () => {
     dispatch(setMinPrice(sanitizeNumericInput(minDraft)));
     dispatch(setMaxPrice(sanitizeNumericInput(maxDraft)));
+    setPriceDraft(null);
   };
 
   return (
@@ -97,7 +92,10 @@ export const FiltersPanel = ({ brands }: FiltersPanelProps) => {
             type="text"
             inputMode="decimal"
             value={minDraft}
-            onChange={(event) => setMinDraft(sanitizeNumericInput(event.target.value))}
+            onChange={(event) => {
+              const nextMin = sanitizeNumericInput(event.target.value);
+              setPriceDraft((previous) => ({ min: nextMin, max: previous?.max ?? maxPrice }));
+            }}
             placeholder="Min"
             aria-label="Min price"
           />
@@ -106,7 +104,10 @@ export const FiltersPanel = ({ brands }: FiltersPanelProps) => {
             type="text"
             inputMode="decimal"
             value={maxDraft}
-            onChange={(event) => setMaxDraft(sanitizeNumericInput(event.target.value))}
+            onChange={(event) => {
+              const nextMax = sanitizeNumericInput(event.target.value);
+              setPriceDraft((previous) => ({ min: previous?.min ?? minPrice, max: nextMax }));
+            }}
             placeholder="Max"
             aria-label="Max price"
           />
