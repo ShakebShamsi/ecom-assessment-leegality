@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { clearFilters, setSearchTerm } from '../../features/products/store/filtersSlice';
@@ -14,6 +14,7 @@ export const Header = ({ onMenuClick, isSidebarOpen = false }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const wasSearchingRef = useRef(false);
 
   useEffect(() => {
     setSearchQuery(storedSearchTerm);
@@ -22,14 +23,21 @@ export const Header = ({ onMenuClick, isSidebarOpen = false }: HeaderProps) => {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const normalizedValue = searchQuery.trim();
+      const isSearching = normalizedValue.length > 0;
+
       dispatch(setSearchTerm(normalizedValue));
-      if (normalizedValue && location.pathname !== '/') {
+
+      // Only navigate to listing when search is activated (not already searching)
+      // This prevents redirecting back to listing when navigating from listing to detail page
+      if (isSearching && !wasSearchingRef.current && location.pathname !== '/') {
         navigate('/');
       }
+
+      wasSearchingRef.current = isSearching;
     }, 350);
 
     return () => window.clearTimeout(timer);
-  }, [dispatch, location.pathname, navigate, searchQuery]);
+  }, [dispatch, navigate, searchQuery]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
