@@ -1,6 +1,6 @@
 # Shakeb E-Commerce UI
 
-A React + TypeScript e-commerce frontend that displays products from DummyJSON, with a filterable/paginated product listing page and a product detail page.
+This is a React + TypeScript e-commerce frontend that consumes product data from the DummyJSON API and presents it through a clean, responsive shopping experience. The application includes a filterable and paginated product listing page, making it easy to browse large catalogs by category, brand, search term, and price range. It also provides a dedicated product detail page with richer information, helping users explore each item before making a purchase decision.
 
 ## Product Listing Screenshot
 
