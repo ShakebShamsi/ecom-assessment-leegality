@@ -23,7 +23,7 @@ export const Header = ({ onMenuClick, isSidebarOpen = false }: HeaderProps) => {
     const timer = window.setTimeout(() => {
       const normalizedValue = searchQuery.trim();
       dispatch(setSearchTerm(normalizedValue));
-      if (location.pathname !== '/') {
+      if (normalizedValue && location.pathname !== '/') {
         navigate('/');
       }
     }, 350);
@@ -35,7 +35,7 @@ export const Header = ({ onMenuClick, isSidebarOpen = false }: HeaderProps) => {
     e.preventDefault();
     const normalizedValue = searchQuery.trim();
     dispatch(setSearchTerm(normalizedValue));
-    if (location.pathname !== '/') {
+    if (normalizedValue && location.pathname !== '/') {
       navigate('/');
     }
   };
